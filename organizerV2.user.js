@@ -8,6 +8,8 @@
 // @exclude      https://prisonstruggle.com/description*
 // @grant        GM_xmlhttpRequest
 // @grant        GM_addStyle
+// @grant        GM_getValue
+// @grant        GM_setValue
 // @connect      prisonstruggle.com
 // @updateURL    https://raw.githubusercontent.com/ivan-kirov/prometheus/main/organizerV2.user.js
 // @downloadURL  https://raw.githubusercontent.com/ivan-kirov/prometheus/main/organizerV2.user.js
@@ -15,8 +17,8 @@
 
 (function () {
     'use strict';
-    
-    const STORAGE_KEY = 'equipmentLabels';    
+
+    const STORAGE_KEY = 'equipmentLabels';
 
     // Default labels fallback
     const defaultLabels = {
@@ -196,12 +198,6 @@
             visibilitySection.appendChild(label);
         });
 
-        // Apply visibility on buttons immediately
-        Object.entries(visibilitySettings).forEach(([key, visible]) => {
-            const btn = document.getElementById(`${key}Btn`);
-            if (btn) btn.style.display = visible ? 'block' : 'none';
-        });
-        
         container.innerHTML = `
         <h4>Equipment</h4>
         <button id="fiveBtn"></button>
@@ -240,6 +236,12 @@
         </div>
     `;
 
+        // Apply visibility on buttons immediately
+        Object.entries(visibilitySettings).forEach(([key, visible]) => {
+            const btn = document.getElementById(`${key}Btn`);
+            if (btn) btn.style.display = visible ? 'block' : 'none';
+        });
+
         container.appendChild(visibilitySection);
         document.body.appendChild(container);
 
@@ -248,6 +250,7 @@
             const btn = document.getElementById(`${key}Btn`);
             if (btn) btn.textContent = label;
         }
+
 
         // Add right-click event to edit labels inline
         Object.keys(equipmentLabels).forEach(key => {
