@@ -260,10 +260,12 @@
                                 state.setNextRun(nextRun);
                                 log(`✅ Iteration #${state.iteration} complete. Next run at ${new Date(nextRun).toLocaleTimeString()}.`);
                             } else {
-                                log("❌ 'Train Strength' button not found during timeout");
+                                log("❌ 'Train Strength' button not found. Retrying...");
+                                const nextRun = getNext5MinTimestamp();
+                                state.setNextRun(nextRun);
+                                setTimeout(() => location.reload(), 10000);
                             }
                         }, CLICK_DELAY);
-                        log(`✅ Iteration #${state.iteration} complete. Next run at ${new Date(nextRun).toLocaleTimeString()}.`);
                     }
                 }
                 break;
