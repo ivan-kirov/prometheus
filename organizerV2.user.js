@@ -16,9 +16,10 @@
 (function () {
     'use strict';
 
-    // You can update the button names below. They are ordered and begin from left to right on the inventory page.
+    const STORAGE_KEY = 'equipmentLabels';
 
-    const equipmentLabels = {
+    // Default labels fallback
+    const defaultLabels = {
         five: 'PG Set',
         six: 'Santa Set',
         seven: 'Fighting',
@@ -30,17 +31,6 @@
         nineteen: 'pat + bow',
         twenty: 'santa'
     };
-
-    // To hide or show buttons in the equipment section use the following logic inside the "container.innerHTML" (Line 156) <!-- anything inbetween is hidden -->
-    // Currently I am hiding the last 5 buttons
-    // For example
-    //  <!--
-    //    <button id="twelveBtn"></button>
-    //    <button id="seventeenBtn"></button>
-    //    <button id="eighteenBtn"></button>
-    //    <button id="nineteenBtn"></button>
-    //    <button id="twentyBtn"></button>
-    //    -->
 
     // ===== Styling for Floating UI =====
     const style = `
@@ -161,6 +151,56 @@
 
         const container = document.createElement('div');
         container.id = 'floating-ui';
+        const visibilityStorageKey = 'equipmentVisibility';
+
+        // Load visibility settings or default all visible
+        let visibilitySettings = GM_getValue(visibilityStorageKey, {});
+        // Initialize defaults if empty
+        Object.keys(equipmentLabels).forEach(key => {
+            if (!(key in visibilitySettings)) visibilitySettings[key] = true;
+        });
+
+        // Create a visibility toggle section
+        const visibilitySection = document.createElement('div');
+        visibilitySection.style.marginTop = '10px';
+        visibilitySection.innerHTML = `<h4>Show / Hide Buttons</h4>`;
+
+        // Add a checkbox per equipment button
+        Object.keys(equipmentLabels).forEach(key => {
+            const id = `${key}Btn`;
+            const checkboxId = `chk_${id}`;
+
+            const label = document.createElement('label');
+            label.style.display = 'block';
+            label.style.cursor = 'pointer';
+            label.htmlFor = checkboxId;
+
+            const checkbox = document.createElement('input');
+            checkbox.type = 'checkbox';
+            checkbox.id = checkboxId;
+            checkbox.checked = visibilitySettings[key];
+            checkbox.style.marginRight = '6px';
+
+            checkbox.addEventListener('change', () => {
+                visibilitySettings[key] = checkbox.checked;
+                GM_setValue(visibilityStorageKey, visibilitySettings);
+                const btn = document.getElementById(id);
+                if (btn) btn.style.display = checkbox.checked ? 'block' : 'none';
+            });
+
+            label.appendChild(checkbox);
+            label.appendChild(document.createTextNode(equipmentLabels[key]));
+            visibilitySection.appendChild(label);
+        });
+
+        // Append visibility toggles to floating UI container
+        container.appendChild(visibilitySection);
+
+        // Apply visibility on buttons immediately
+        Object.entries(visibilitySettings).forEach(([key, visible]) => {
+            const btn = document.getElementById(`${key}Btn`);
+            if (btn) btn.style.display = visible ? 'block' : 'none';
+        });
 
         container.innerHTML = `
         <h4>Equipment</h4>
@@ -169,13 +209,11 @@
         <button id="sevenBtn"></button>
         <button id="eightBtn"></button>
         <button id="elevenBtn"></button>
-        <!--
         <button id="twelveBtn"></button>
         <button id="seventeenBtn"></button>
         <button id="eighteenBtn"></button>
         <button id="nineteenBtn"></button>
         <button id="twentyBtn"></button>
-        -->
         <h4>Actions</h4>
         <button id="UseBtn" style="background: #2196F3;">Use ▼</button>
         <div id="useSection" style="display: none;" class="subsection">
@@ -209,6 +247,22 @@
             const btn = document.getElementById(`${key}Btn`);
             if (btn) btn.textContent = label;
         }
+
+        // Add right-click event to edit labels inline
+        Object.keys(equipmentLabels).forEach(key => {
+            const btn = document.getElementById(`${key}Btn`);
+            if (!btn) return;
+            btn.addEventListener('contextmenu', e => {
+                e.preventDefault();
+                const newLabel = prompt(`Edit label for button "${equipmentLabels[key]}"`, equipmentLabels[key]);
+                if (newLabel && newLabel.trim()) {
+                    equipmentLabels[key] = newLabel.trim();
+                    btn.textContent = equipmentLabels[key];
+                    GM_setValue(STORAGE_KEY, equipmentLabels);
+                    showToast(`Label for ${key} saved`);
+                }
+            });
+        });
 
         // Re-bind toggles (ensure these don’t get bound multiple times if re-called)
         document.getElementById('UseBtn')?.addEventListener('click', () => {
@@ -270,8 +324,14 @@
 
 
     function hideLockedPrisonBusButtons() {
-        const levelElement = Array.from(document.querySelectorAll('strong'))
-            .find(el => el.previousSibling?.textContent?.includes('Level:'));
+        function getPlayerLevel() {
+            const levelElement = Array.from(document.querySelectorAll('strong'))
+                .find(el => el.previousSibling?.textContent?.includes('Level:'));
+            if (!levelElement) return null;
+            const level = parseInt(levelElement.textContent.trim(), 10);
+            return isNaN(level) ? null : level;
+        }
+
         if (!levelElement) return console.warn('Level element not found');
 
         const playerLevel = parseInt(levelElement.textContent.trim(), 10);
@@ -313,47 +373,49 @@
     }
 
 
-    // ===== Event Listeners =====
-    document.getElementById('fiveBtn').addEventListener('click', () => sendPost(payloads.five, equipmentLabels.five));
-    document.getElementById('sixBtn').addEventListener('click', () => sendPost(payloads.six, equipmentLabels.six));
-    document.getElementById('sevenBtn').addEventListener('click', () => sendPost(payloads.seven, equipmentLabels.seven));
-    document.getElementById('eightBtn').addEventListener('click', () => sendPost(payloads.eight, equipmentLabels.eight));
-    document.getElementById('elevenBtn').addEventListener('click', () => sendPost(payloads.eleven, equipmentLabels.eleven));
-    document.getElementById('twelveBtn').addEventListener('click', () => sendPost(payloads.twelve, equipmentLabels.twelve));
-    document.getElementById('seventeenBtn').addEventListener('click', () => sendPost(payloads.seventeen, equipmentLabels.seventeen));
-    document.getElementById('eighteenBtn').addEventListener('click', () => sendPost(payloads.eighteen, equipmentLabels.eighteen));
-    document.getElementById('nineteenBtn').addEventListener('click', () => sendPost(payloads.nineteen, equipmentLabels.nineteen));
-    document.getElementById('twentyBtn').addEventListener('click', () => sendPost(payloads.twenty, equipmentLabels.twenty));
-    document.getElementById('healthBtn').addEventListener('click', () => sendPost(payloads.health, 'Health Pill'));
+    // Define all your button configs in one array
+    const buttonsConfig = [
+        // id, payload key, label, optional URL
+        { id: 'fiveBtn', payloadKey: 'five', labelKey: 'five' },
+        { id: 'sixBtn', payloadKey: 'six', labelKey: 'six' },
+        { id: 'sevenBtn', payloadKey: 'seven', labelKey: 'seven' },
+        { id: 'eightBtn', payloadKey: 'eight', labelKey: 'eight' },
+        { id: 'elevenBtn', payloadKey: 'eleven', labelKey: 'eleven' },
+        { id: 'twelveBtn', payloadKey: 'twelve', labelKey: 'twelve' },
+        { id: 'seventeenBtn', payloadKey: 'seventeen', labelKey: 'seventeen' },
+        { id: 'eighteenBtn', payloadKey: 'eighteen', labelKey: 'eighteen' },
+        { id: 'nineteenBtn', payloadKey: 'nineteen', labelKey: 'nineteen' },
+        { id: 'twentyBtn', payloadKey: 'twenty', labelKey: 'twenty' },
+        { id: 'healthBtn', payloadKey: 'health', label: 'Health Pill' },
 
-    document.getElementById('mint5Btn').addEventListener('click', () =>
-        sendPost(payloads.mint5, 'Mint x5', 'https://prisonstruggle.com/plant_effect.php'));
-    document.getElementById('shardExpBtn').addEventListener('click', () =>
-        sendPost(payloads.shardExp, 'Shard Experience', 'https://prisonstruggle.com/wiseoldman.php?action=shards'));
-    document.getElementById('shardTrainingBtn').addEventListener('click', () =>
-        sendPost(payloads.shardTraining, 'Shard Training', 'https://prisonstruggle.com/wiseoldman.php?action=shards'));
-    document.getElementById('PanamaBtn').addEventListener('click', () =>
-        sendPost(payloads.panama, 'Panama', 'https://prisonstruggle.com/bus.php'));
-    document.getElementById('AlcatrazBtn').addEventListener('click', () =>
-        sendPost(payloads.alcatraz, 'Alcatraz', 'https://prisonstruggle.com/bus.php'));
-    document.getElementById('GuantanamoBayBtn').addEventListener('click', () =>
-        sendPost(payloads.guantanamoBay, 'Guantanamo Bay', 'https://prisonstruggle.com/bus.php'));
-    document.getElementById('LongBayBtn').addEventListener('click', () =>
-        sendPost(payloads.longBay, 'Long Bay', 'https://prisonstruggle.com/bus.php'));
-    document.getElementById('UtahBtn').addEventListener('click', () =>
-        sendPost(payloads.utah, 'Utah', 'https://prisonstruggle.com/bus.php'));
-    document.getElementById('DorchesterBtn').addEventListener('click', () =>
-        sendPost(payloads.dorchester, 'Dorchester', 'https://prisonstruggle.com/bus.php'));
-    document.getElementById('SanQuentinBtn').addEventListener('click', () =>
-        sendPost(payloads.sanQuentin, 'San Quentin', 'https://prisonstruggle.com/bus.php'));
-    document.getElementById('AtticaBtn').addEventListener('click', () =>
-        sendPost(payloads.attica, 'Attica', 'https://prisonstruggle.com/bus.php'));
-    document.getElementById('McNeilIslandBtn').addEventListener('click', () =>
-        sendPost(payloads.mcNeilIsland, 'McNeil Island', 'https://prisonstruggle.com/bus.php'));
-    document.getElementById('SingSingBtn').addEventListener('click', () =>
-        sendPost(payloads.singSing, 'Sing Sing', 'https://prisonstruggle.com/bus.php'));
-    document.getElementById('DevilIslandBtn').addEventListener('click', () =>
-        sendPost(payloads.devilIsland, 'Devil Island', 'https://prisonstruggle.com/bus.php'));
-    document.getElementById('RikerBtn').addEventListener('click', () =>
-        sendPost(payloads.riker, 'Riker', 'https://prisonstruggle.com/bus.php'));
+        { id: 'mint5Btn', payloadKey: 'mint5', label: 'Mint x5', url: 'https://prisonstruggle.com/plant_effect.php' },
+        { id: 'shardExpBtn', payloadKey: 'shardExp', label: 'Shard Experience', url: 'https://prisonstruggle.com/wiseoldman.php?action=shards' },
+        { id: 'shardTrainingBtn', payloadKey: 'shardTraining', label: 'Shard Training', url: 'https://prisonstruggle.com/wiseoldman.php?action=shards' },
+
+        // Bus buttons share the same url, so just list them here
+        { id: 'PanamaBtn', payloadKey: 'panama', label: 'Panama', url: 'https://prisonstruggle.com/bus.php' },
+        { id: 'AlcatrazBtn', payloadKey: 'alcatraz', label: 'Alcatraz', url: 'https://prisonstruggle.com/bus.php' },
+        { id: 'GuantanamoBayBtn', payloadKey: 'guantanamoBay', label: 'Guantanamo Bay', url: 'https://prisonstruggle.com/bus.php' },
+        { id: 'LongBayBtn', payloadKey: 'longBay', label: 'Long Bay', url: 'https://prisonstruggle.com/bus.php' },
+        { id: 'UtahBtn', payloadKey: 'utah', label: 'Utah', url: 'https://prisonstruggle.com/bus.php' },
+        { id: 'DorchesterBtn', payloadKey: 'dorchester', label: 'Dorchester', url: 'https://prisonstruggle.com/bus.php' },
+        { id: 'SanQuentinBtn', payloadKey: 'sanQuentin', label: 'San Quentin', url: 'https://prisonstruggle.com/bus.php' },
+        { id: 'AtticaBtn', payloadKey: 'attica', label: 'Attica', url: 'https://prisonstruggle.com/bus.php' },
+        { id: 'McNeilIslandBtn', payloadKey: 'mcNeilIsland', label: 'McNeil Island', url: 'https://prisonstruggle.com/bus.php' },
+        { id: 'SingSingBtn', payloadKey: 'singSing', label: 'Sing Sing', url: 'https://prisonstruggle.com/bus.php' },
+        { id: 'DevilIslandBtn', payloadKey: 'devilIsland', label: 'Devil Island', url: 'https://prisonstruggle.com/bus.php' },
+        { id: 'RikerBtn', payloadKey: 'riker', label: 'Riker', url: 'https://prisonstruggle.com/bus.php' },
+    ];
+
+    // Attach event listeners dynamically
+    buttonsConfig.forEach(({ id, payloadKey, labelKey, label, url }) => {
+        const el = document.getElementById(id);
+        if (!el) return; // skip if no element with this id
+
+        el.addEventListener('click', () => {
+            // Use label if provided, else look up from equipmentLabels by labelKey
+            const labelText = label || equipmentLabels[labelKey];
+            sendPost(payloads[payloadKey], labelText, url);
+        });
+    });
 })();
