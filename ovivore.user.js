@@ -1,13 +1,13 @@
 // ==UserScript==
 // @name         Ovivore
 // @namespace    http://tampermonkey.net/
-// @version      1.1
+// @version      1.2
 // @description  Auto-refresh, detect Easter eggs, and track activity on PrisonStruggle.
 // @author       Peekaboo
 // @match        https://prisonstruggle.com/*
 // @grant        none
-// @updateURL    https://github.com/ivan-kirov/prometheus/raw/main/scripts/javascript/ovivore.user.js
-// @downloadURL  https://github.com/ivan-kirov/prometheus/raw/main/scripts/javascript/ovivore.user.js
+// @updateURL    https://github.com/ivan-kirov/prometheus/raw/main/ovivore.user.js
+// @downloadURL  https://github.com/ivan-kirov/prometheus/raw/main/ovivore.user.js
 // ==/UserScript==
 
 (function () {

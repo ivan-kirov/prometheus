@@ -1,13 +1,13 @@
 // ==UserScript==
 // @name         Watering can
 // @namespace    http://tampermonkey.net/
-// @version      1.2
+// @version      1.3
 // @description  Finds all plants and harvests them one by one. Uses a delay and cooldown every 30 clicks. Also works on mobile
 // @match        https://prisonstruggle.com/fields.php
 // @grant        none
 // @author       Peekaboo
-// @updateURL    https://github.com/ivan-kirov/prometheus/raw/main/scripts/javascript/watering_can.user.js
-// @downloadURL  https://github.com/ivan-kirov/prometheus/raw/main/scripts/javascript/watering_can.user.js
+// @updateURL    https://github.com/ivan-kirov/prometheus/raw/main/watering_can.user.js
+// @downloadURL  https://github.com/ivan-kirov/prometheus/raw/main/watering_can.user.js
 // ==/UserScript==
 
 (function () {
