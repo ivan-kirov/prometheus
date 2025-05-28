@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         OrganiserV2
 // @namespace    http://tampermonkey.net/
-// @version      2.4
+// @version      2.5
 // @description  Floating UI with buttons that send different POST requests for gear sets or actions, with labels and grouping
 // @author       Peekaboo
 // @match        https://prisonstruggle.com/*
@@ -165,21 +165,23 @@
             if (!(key in visibilitySettings)) visibilitySettings[key] = true;
         });
 
+        
+
+        const visibilitySection = document.createElement('div');
+        visibilitySection.style.marginTop = '10px';
+        visibilitySection.innerHTML = `<h4>Show / Hide Buttons</h4>`;
+
         // Create a visibility toggle section
         const visibilitySectionContainer = document.createElement('div');
         visibilitySectionContainer.id = 'visibilitySectionContainer';
         visibilitySectionContainer.style.display = 'none'; // default to hidden
         visibilitySectionContainer.className = 'subsection';
 
-        const visibilitySection = document.createElement('div');
-        visibilitySection.style.marginTop = '10px';
-        visibilitySection.innerHTML = `<h4>Show / Hide Buttons</h4>`;
-
 
         // Add a checkbox per equipment button
         Object.keys(equipmentLabels).forEach(key => {
-            const id = `${key} Btn`;
-            const checkboxId = `chk_${id} `;
+            const id = `${key}Btn`;
+            const checkboxId = `chk_${id}`;
 
             const label = document.createElement('label');
             label.style.display = 'block';
@@ -262,20 +264,20 @@
 
         // Apply visibility on buttons immediately
         Object.entries(visibilitySettings).forEach(([key, visible]) => {
-            const btn = document.getElementById(`${key} Btn`);
+            const btn = document.getElementById(`${key}Btn`);
             if (btn) btn.style.display = visible ? 'block' : 'none';
         });
 
         // Assign button labels
         for (const [key, label] of Object.entries(equipmentLabels)) {
-            const btn = document.getElementById(`${key} Btn`);
+            const btn = document.getElementById(`${key}Btn`);
             if (btn) btn.textContent = label;
         }
 
 
         // Add right-click event to edit labels inline
         Object.keys(equipmentLabels).forEach(key => {
-            const btn = document.getElementById(`${key} Btn`);
+            const btn = document.getElementById(`${key}Btn`);
             if (!btn) return;
             btn.addEventListener('contextmenu', e => {
                 e.preventDefault();
