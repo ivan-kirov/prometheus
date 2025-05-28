@@ -9,8 +9,8 @@
 // @match        https://prisonstruggle.com/*
 // @exclude      https://prisonstruggle.com/description*
 // @connect      prisonstruggle.com
-// @updateURL    https://github.com/ivan-kirov/prometheus/raw/main/scripts/javascript/bulk.user.js
-// @downloadURL  https://github.com/ivan-kirov/prometheus/raw/main/scripts/javascript/bulk.user.js
+// @updateURL    https://github.com/ivan-kirov/prometheus/raw/main/bulk.user.js
+// @downloadURL  https://github.com/ivan-kirov/prometheus/raw/main/bulk.user.js
 // ==/UserScript==
 
 
