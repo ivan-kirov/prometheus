@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Bulk
 // @namespace    http://tampermonkey.net/
-// @version      1.3
+// @version      1.4
 // @description  Auto perform actions on PrisonStruggle every 5 minutes at 6 seconds
 // @match        https://prisonstruggle.com/*
 // @grant        none
@@ -9,8 +9,8 @@
 // @match        https://prisonstruggle.com/*
 // @exclude      https://prisonstruggle.com/description*
 // @connect      prisonstruggle.com
-// @updateURL    https://github.com/ivan-kirov/prometheus/raw/main/bulk.user.js
-// @downloadURL  https://github.com/ivan-kirov/prometheus/raw/main/bulk.user.js
+// @updateURL    https://raw.githubusercontent.com/ivan-kirov/prometheus/main/bulk.user.js
+// @downloadURL  https://raw.githubusercontent.com/ivan-kirov/prometheus/main/bulk.user.js
 // ==/UserScript==
 
 

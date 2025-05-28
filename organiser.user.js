@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Organiser
 // @namespace    http://tampermonkey.net/
-// @version      1.3
+// @version      1.4
 // @description  Floating UI with quick buttons.
 // @author       Peekaboo
 // @match        https://prisonstruggle.com/*
@@ -9,8 +9,8 @@
 // @grant        GM_xmlhttpRequest
 // @grant        GM_addStyle
 // @connect      prisonstruggle.com
-// @updateURL    https://github.com/ivan-kirov/prometheus/raw/main/organiser.user.js
-// @downloadURL  https://github.com/ivan-kirov/prometheus/raw/main/organiser.user.js
+// @updateURL    https://raw.githubusercontent.com/ivan-kirov/prometheus/main/organiser.user.js
+// @downloadURL  https://raw.githubusercontent.com/ivan-kirov/prometheus/main/organiser.user.js
 // ==/UserScript==
 
 (function () {

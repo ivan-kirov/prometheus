@@ -1,13 +1,13 @@
 // ==UserScript==
 // @name         Sickle
 // @namespace    http://tampermonkey.net/
-// @version      1.3
+// @version      1.4
 // @description  Finds all plants and harvests them one by one. Uses a delay and cooldown every 30 clicks. Also works on mobile
 // @match        https://prisonstruggle.com/fields.php
 // @grant        none
 // @author       Peekaboo
-// @updateURL    https://github.com/ivan-kirov/prometheus/raw/main/sickle.user.js
-// @downloadURL  https://github.com/ivan-kirov/prometheus/raw/main/sickle.user.js
+// @updateURL    https://raw.githubusercontent.com/ivan-kirov/prometheus/main/sickle.user.js
+// @downloadURL  https://raw.githubusercontent.com/ivan-kirov/prometheus/main/sickle.user.js
 
 // ==/UserScript==
 
