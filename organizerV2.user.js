@@ -166,18 +166,20 @@
         });
 
         // Create a visibility toggle section
+        const visibilitySectionContainer = document.createElement('div');
+        visibilitySectionContainer.id = 'visibilitySectionContainer';
+        visibilitySectionContainer.style.display = 'none'; // default to hidden
+        visibilitySectionContainer.className = 'subsection';
+
         const visibilitySection = document.createElement('div');
         visibilitySection.style.marginTop = '10px';
-        visibilitySection.innerHTML = `
-        <h4>Show / Hide Buttons</h4>
-        <button id="ToggleShowHideBtn">Toggle Visibility ▼</button>
-        <div id="toggleShowHide" style="display: none;" class="subsection">
-        `;
+        visibilitySection.innerHTML = `<h4>Show / Hide Buttons</h4>`;
+
 
         // Add a checkbox per equipment button
         Object.keys(equipmentLabels).forEach(key => {
-            const id = `${key}Btn`;
-            const checkboxId = `chk_${id}`;
+            const id = `${key} Btn`;
+            const checkboxId = `chk_${id} `;
 
             const label = document.createElement('label');
             label.style.display = 'block';
@@ -203,7 +205,7 @@
         });
 
         container.innerHTML = `
-        <h4>Equipment</h4>
+            < h4 > Equipment</h4 >
         <button id="fiveBtn"></button>
         <button id="sixBtn"></button>
         <button id="sevenBtn"></button>
@@ -222,7 +224,6 @@
             <button id="shardExpBtn">Shard Exp</button>
             <button id="shardTrainingBtn">Shard Training</button>
         </div>
-
         <button id="ToggleBusBtn" style="background: #2196F3;">Prison Bus ▼</button>
         <div id="busSection" style="display: none;" class="subsection">
             <button id="PanamaBtn">Panama</button>
@@ -238,27 +239,42 @@
             <button id="DevilIslandBtn">Devil Island</button>
             <button id="RikerBtn">Riker</button>
         </div>
-    `;
+        `;
+
+        const toggleVisibilityBtn = document.createElement('button');
+        toggleVisibilityBtn.id = 'ToggleVisibilityBtn';
+        toggleVisibilityBtn.textContent = 'Visibility Settings ▼';
+        toggleVisibilityBtn.style.background = '#2196F3';
+        container.appendChild(toggleVisibilityBtn);
+
+        document.getElementById('ToggleVisibilityBtn')?.addEventListener('click', () => {
+            const section = document.getElementById('visibilitySectionContainer');
+            section.style.display = section.style.display === 'block' ? 'none' : 'block';
+        });
+
+
+
+        visibilitySectionContainer.appendChild(visibilitySection);
+        container.appendChild(visibilitySectionContainer);
+
+        document.body.appendChild(container);
 
         // Apply visibility on buttons immediately
         Object.entries(visibilitySettings).forEach(([key, visible]) => {
-            const btn = document.getElementById(`${key}Btn`);
+            const btn = document.getElementById(`${key} Btn`);
             if (btn) btn.style.display = visible ? 'block' : 'none';
         });
 
-        container.appendChild(visibilitySection);
-        document.body.appendChild(container);
-
         // Assign button labels
         for (const [key, label] of Object.entries(equipmentLabels)) {
-            const btn = document.getElementById(`${key}Btn`);
+            const btn = document.getElementById(`${key} Btn`);
             if (btn) btn.textContent = label;
         }
 
 
         // Add right-click event to edit labels inline
         Object.keys(equipmentLabels).forEach(key => {
-            const btn = document.getElementById(`${key}Btn`);
+            const btn = document.getElementById(`${key} Btn`);
             if (!btn) return;
             btn.addEventListener('contextmenu', e => {
                 e.preventDefault();
@@ -275,11 +291,6 @@
         // Re-bind toggles (ensure these don’t get bound multiple times if re-called)
         document.getElementById('UseBtn')?.addEventListener('click', () => {
             const section = document.getElementById('useSection');
-            section.style.display = section.style.display === 'block' ? 'none' : 'block';
-        });
-
-        document.getElementById('ToggleShowHideBtn')?.addEventListener('click', () => {
-            const section = document.getElementById('toggleShowHide');
             section.style.display = section.style.display === 'block' ? 'none' : 'block';
         });
 
