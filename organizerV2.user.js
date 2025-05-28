@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         OrganiserV2
 // @namespace    http://tampermonkey.net/
-// @version      2.2
+// @version      2.3
 // @description  Floating UI with buttons that send different POST requests for gear sets or actions, with labels and grouping
 // @author       Peekaboo
 // @match        https://prisonstruggle.com/*
