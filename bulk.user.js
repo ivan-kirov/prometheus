@@ -100,19 +100,26 @@
     }
 
     function postToPlantEffect(plantId) {
-        const form = document.createElement("form");
-        form.method = "POST";
-        form.action = "/plant_effect.php";
-
-        const input = document.createElement("input");
-        input.type = "hidden";
-        input.name = "id";
-        input.value = plantId;
-
-        form.appendChild(input);
-        document.body.appendChild(form);
-        form.submit();
+        fetch('/plant_effect.php', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/x-www-form-urlencoded',
+                // Other headers like Origin, Referer, User-Agent are set automatically by browser
+            },
+            body: `id=${encodeURIComponent(plantId)}`,
+            credentials: 'same-origin'  // ensures cookies are sent
+        })
+            .then(response => response.text())
+            .then(text => {
+                console.log('Plant effect response:', text);
+                // Reload or update UI if needed
+                location.reload();
+            })
+            .catch(error => {
+                console.error('Error:', error);
+            });
     }
+
 
 
     async function performDelayedClick(callback) {
@@ -164,99 +171,112 @@
                     location.href = "/inventory.php";
                 } else {
                     if (iteration > 0 && iteration % 20 === 0) {
-                        const useLink = [...document.querySelectorAll('a.links')]
-                            .find(a => a.getAttribute('href') === "javascript:Send('use=14');");
-                        if (useLink) {
-                            log(`🧪 Iteration ${iteration}: Using item ID 14.`);
-                            useLink.click();
-                            return; // Stop here; wait for reload
-                        } else {
-                            log("⚠️ Use link for item ID 14 not found.");
-                        }
-                    }
+                        // Instead of clicking the link, send a POST request to use the item
+                        log(`🧪 Iteration ${iteration}: Using item ID 14.`);
 
-                    localStorage.setItem("ps_stage", "equip-santa");
-                    await performDelayedClick(() => {
-                        const btn = [...document.querySelectorAll('a.button')].find(a => a.textContent.includes("Santa"));
-                        if (btn) btn.click();
-                    });
-                }
-                break;
+                        fetch('/plant_effect.php', {  // or correct URL for item usage if different
+                            method: 'POST',
+                            headers: {
+                                'Content-Type': 'application/x-www-form-urlencoded',
+                            },
+                            body: 'id=14',
+                            credentials: 'same-origin'
+                        })
+                            .then(response => response.text())
+                            .then(text => {
+                                log('Item use response received, reloading...');
+                                location.reload();  // or whatever reload/navigation you want
+                            })
+                            .catch(err => {
+                                log('Error using item ID 14:', err);
+                            });
+
+                        return; // Stop here to wait for reload after using the item
+                    }
+                
+
+                localStorage.setItem("ps_stage", "equip-santa");
+                await performDelayedClick(() => {
+                    const btn = [...document.querySelectorAll('a.button')].find(a => a.textContent.includes("Santa"));
+                    if (btn) btn.click();
+                });
+        }
+        break;
 
             case "equip-santa":
-                localStorage.setItem("ps_stage", "do-crime");
-                location.href = "/crime.php";
-                break;
+        localStorage.setItem("ps_stage", "do-crime");
+        location.href = "/crime.php";
+        break;
 
             case "do-crime":
-                if (url !== "/crime.php") {
-                    location.href = "/crime.php";
-                } else {
-                    localStorage.setItem("ps_stage", "after-crime");
-                    await performDelayedClick(() => {
-                        const btn = [...document.querySelectorAll('button')].find(b => b.textContent.includes("Use All Nerve"));
-                        if (btn) btn.click();
-                    });
-                }
-                break;
+        if (url !== "/crime.php") {
+            location.href = "/crime.php";
+        } else {
+            localStorage.setItem("ps_stage", "after-crime");
+            await performDelayedClick(() => {
+                const btn = [...document.querySelectorAll('button')].find(b => b.textContent.includes("Use All Nerve"));
+                if (btn) btn.click();
+            });
+        }
+        break;
 
             case "after-crime":
-                localStorage.setItem("ps_stage", "deposit");
-                location.href = "https://prisonstruggle.com/bank.php?dep=1";
-                break;
+        localStorage.setItem("ps_stage", "deposit");
+        location.href = "https://prisonstruggle.com/bank.php?dep=1";
+        break;
 
             case "deposit":
-                localStorage.setItem("ps_stage", "equip-pg");
-                location.href = "/inventory.php";
-                break;
+        localStorage.setItem("ps_stage", "equip-pg");
+        location.href = "/inventory.php";
+        break;
 
             case "equip-pg":
-                if (url !== "/inventory.php") {
-                    location.href = "/inventory.php";
-                } else {
-                    localStorage.setItem("ps_stage", "go-gym");
-                    await performDelayedClick(() => {
-                        const btn = [...document.querySelectorAll('a.button')].find(a => a.textContent.includes("PG"));
-                        if (btn) btn.click();
-                    });
-                }
-                break;
+        if (url !== "/inventory.php") {
+            location.href = "/inventory.php";
+        } else {
+            localStorage.setItem("ps_stage", "go-gym");
+            await performDelayedClick(() => {
+                const btn = [...document.querySelectorAll('a.button')].find(a => a.textContent.includes("PG"));
+                if (btn) btn.click();
+            });
+        }
+        break;
 
             case "go-gym":
-                localStorage.setItem("ps_stage", "gym");
-                location.href = "/pggym.php";
-                break;
+        localStorage.setItem("ps_stage", "gym");
+        location.href = "/pggym.php";
+        break;
 
             case "gym":
-                if (url === "/pggym.php") {
-                    const trainBtn = [...document.querySelectorAll('input.button[type="submit"]')]
-                        .find(btn => btn.value === "Train Strength");
+        if (url === "/pggym.php") {
+            const trainBtn = [...document.querySelectorAll('input.button[type="submit"]')]
+                .find(btn => btn.value === "Train Strength");
+            if (trainBtn) {
+                setTimeout(() => {
                     if (trainBtn) {
-                        setTimeout(() => {
-                            if (trainBtn) {
-                                trainBtn.click();
-                                log("💪 Clicked 'Train Strength'");
-                            } else {
-                                log("❌ 'Train Strength' button not found during timeout");
-                            }
-                        }, CLICK_DELAY);
-
-
-                        localStorage.removeItem("ps_stage");
-                        state.incrementIteration();
-
-                        const nextRun = getNext5MinTimestamp();
-                        state.setNextRun(nextRun);
-                        log(`✅ Iteration #${state.iteration} complete. Next run at ${new Date(nextRun).toLocaleTimeString()}.`);
+                        trainBtn.click();
+                        log("💪 Clicked 'Train Strength'");
+                    } else {
+                        log("❌ 'Train Strength' button not found during timeout");
                     }
-                }
-                    break;
-            default:
-                localStorage.setItem("ps_stage", "start");
-                location.href = "/inventory.php";
-                break;
+                }, CLICK_DELAY);
+
+
+                localStorage.removeItem("ps_stage");
+                state.incrementIteration();
+
+                const nextRun = getNext5MinTimestamp();
+                state.setNextRun(nextRun);
+                log(`✅ Iteration #${state.iteration} complete. Next run at ${new Date(nextRun).toLocaleTimeString()}.`);
+            }
         }
+        break;
+            default:
+        localStorage.setItem("ps_stage", "start");
+        location.href = "/inventory.php";
+        break;
     }
+}
 
     waitUntilNextRun();
-})();
+}) ();
