@@ -162,6 +162,7 @@
         <h4>Actions</h4>
         <button id="toggleTrainingBtn" style="background: #2196F3;">Training ▼</button>
         <div id="trainingSection" style="display: none;" class="subsection">
+            <button id="healthBtn">Health Pill</button>
             <button id="mint5Btn">Mint x5</button>
             <button id="shardExpBtn">Shard Exp</button>
         </div>
@@ -231,6 +232,7 @@
         eighteen: { rpfeature: '18', save1: '_0', save2: '_0', save3: '_0', save4: '_0', save5: '_0', save6: '_0', save7: '_0', save8: '_0', save9: '_0', save10: '_0' },
         nineteen: { rpfeature: '19', save1: '_0', save2: '_0', save3: '_0', save4: '_0', save5: '_0', save6: '_0', save7: '_0', save8: '_0', save9: '_0', save10: '_0' },
         twenty: { rpfeature: '20', save1: '_0', save2: '_0', save3: '_0', save4: '_0', save5: '_0', save6: '_0', save7: '_0', save8: '_0', save9: '_0', save10: '_0' },
+        health: {use: '76'},
         mint5: { activate: 'yes', itemcount: '1', id: '2026', useMax: 'Use+Max+%285+Mints%29' },
         shardExp: { buffBuy: 'shard_training' },
         panama: { go: '1' },
@@ -268,7 +270,7 @@
             { id: "McNeilIslandBtn", level: 175 },
             { id: "SingSingBtn", level: 200 },
             { id: "DevilIslandBtn", level: 275 },
-            { id: "RikerBtn", level: 350 } // Ensure this ID matches the actual button ID
+            { id: "RikerBtn", level: 350 }
         ];
 
         busRequirements.forEach(({ id, level }) => {
@@ -303,13 +305,12 @@
     document.getElementById('eighteenBtn').addEventListener('click', () => sendPost(payloads.eighteen, equipmentLabels.eighteen));
     document.getElementById('nineteenBtn').addEventListener('click', () => sendPost(payloads.nineteen, equipmentLabels.nineteen));
     document.getElementById('twentyBtn').addEventListener('click', () => sendPost(payloads.twenty, equipmentLabels.twenty));
-
+    document.getElementById('healthBtn').addEventListener('click', () => sendPost(payloads.health, 'Health Pill'));
 
     document.getElementById('mint5Btn').addEventListener('click', () =>
         sendPost(payloads.mint5, 'Mint x5', 'https://prisonstruggle.com/plant_effect.php'));
     document.getElementById('shardExpBtn').addEventListener('click', () =>
         sendPost(payloads.shardExp, 'Shard Exp', 'https://prisonstruggle.com/wiseoldman.php?action=shards'));
-
     document.getElementById('PanamaBtn').addEventListener('click', () =>
         sendPost(payloads.panama, 'Panama', 'https://prisonstruggle.com/bus.php'));
     document.getElementById('AlcatrazBtn').addEventListener('click', () =>
