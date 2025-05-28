@@ -9,8 +9,8 @@
 // @grant        GM_xmlhttpRequest
 // @grant        GM_addStyle
 // @connect      prisonstruggle.com
-// @updateURL    https://github.com/ivan-kirov/prometheus/raw/refs/heads/main/organizerV2.user.js
-// @downloadURL  https://github.com/ivan-kirov/prometheus/raw/refs/heads/main/organizerV2.user.js
+// @updateURL    https://raw.githubusercontent.com/ivan-kirov/prometheus/main/organizerV2.user.js
+// @downloadURL  https://raw.githubusercontent.com/ivan-kirov/prometheus/main/organizerV2.user.js
 // ==/UserScript==
 
 (function () {
