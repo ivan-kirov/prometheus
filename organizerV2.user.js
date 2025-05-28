@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         OrganiserV2
 // @namespace    http://tampermonkey.net/
-// @version      2.6
+// @version      2.7
 // @description  Floating UI with buttons that send different POST requests for gear sets or actions, with labels and grouping
 // @author       Peekaboo
 // @match        https://prisonstruggle.com/*
@@ -166,7 +166,6 @@
         });
 
         
-
         const visibilitySection = document.createElement('div');
         visibilitySection.style.marginTop = '10px';
         visibilitySection.innerHTML = `<h4>Show / Hide Buttons</h4>`;

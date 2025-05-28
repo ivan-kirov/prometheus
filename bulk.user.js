@@ -1,9 +1,8 @@
 // ==UserScript==
 // @name         Bulk
 // @namespace    http://tampermonkey.net/
-// @version      1.4
+// @version      1.5
 // @description  Auto perform actions on PrisonStruggle every 5 minutes at 6 seconds
-// @match        https://prisonstruggle.com/*
 // @grant        none
 // @author       Peekaboo
 // @match        https://prisonstruggle.com/*
@@ -118,8 +117,15 @@
 
     async function performDelayedClick(callback) {
         await new Promise(r => setTimeout(r, CLICK_DELAY));
-        if (!checkCaptcha()) callback();
+        if (!checkCaptcha()) {
+            try {
+                callback();
+            } catch (e) {
+                console.error("performDelayedClick callback error:", e);
+            }
+        }
     }
+
 
     async function runMainLoop() {
         if (checkCaptcha()) return;
@@ -170,7 +176,7 @@
                     }
 
                     localStorage.setItem("ps_stage", "equip-santa");
-                    performDelayedClick(() => {
+                    await performDelayedClick(() => {
                         const btn = [...document.querySelectorAll('a.button')].find(a => a.textContent.includes("Santa"));
                         if (btn) btn.click();
                     });
@@ -187,7 +193,7 @@
                     location.href = "/crime.php";
                 } else {
                     localStorage.setItem("ps_stage", "after-crime");
-                    performDelayedClick(() => {
+                    await performDelayedClick(() => {
                         const btn = [...document.querySelectorAll('button')].find(b => b.textContent.includes("Use All Nerve"));
                         if (btn) btn.click();
                     });
@@ -209,7 +215,7 @@
                     location.href = "/inventory.php";
                 } else {
                     localStorage.setItem("ps_stage", "go-gym");
-                    performDelayedClick(() => {
+                    await performDelayedClick(() => {
                         const btn = [...document.querySelectorAll('a.button')].find(a => a.textContent.includes("PG"));
                         if (btn) btn.click();
                     });
@@ -227,22 +233,24 @@
                         .find(btn => btn.value === "Train Strength");
                     if (trainBtn) {
                         setTimeout(() => {
-                            trainBtn.click();
-                            log("💪 Clicked 'Train Strength'");
+                            if (trainBtn) {
+                                trainBtn.click();
+                                log("💪 Clicked 'Train Strength'");
+                            } else {
+                                log("❌ 'Train Strength' button not found during timeout");
+                            }
                         }, CLICK_DELAY);
-                    } else {
-                        log("❌ 'Train Strength' button not found");
+
+
+                        localStorage.removeItem("ps_stage");
+                        state.incrementIteration();
+
+                        const nextRun = getNext5MinTimestamp();
+                        state.setNextRun(nextRun);
+                        log(`✅ Iteration #${state.iteration} complete. Next run at ${new Date(nextRun).toLocaleTimeString()}.`);
                     }
-
-                    localStorage.removeItem("ps_stage");
-                    state.incrementIteration();
-
-                    const nextRun = getNext5MinTimestamp();
-                    state.setNextRun(nextRun);
-                    log(`✅ Iteration #${state.iteration} complete. Next run at ${new Date(nextRun).toLocaleTimeString()}.`);
                 }
-                break;
-
+                    break;
             default:
                 localStorage.setItem("ps_stage", "start");
                 location.href = "/inventory.php";
