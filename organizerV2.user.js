@@ -324,6 +324,14 @@
 
 
     function hideLockedPrisonBusButtons() {
+        const playerLevel = getPlayerLevel();
+        if (playerLevel === null) {
+            console.warn('Could not determine player level.');
+            return;
+        }
+
+        if (!levelElement) return console.warn('Level element not found');
+
         function getPlayerLevel() {
             const levelElement = Array.from(document.querySelectorAll('strong'))
                 .find(el => el.previousSibling?.textContent?.includes('Level:'));
@@ -331,12 +339,6 @@
             const level = parseInt(levelElement.textContent.trim(), 10);
             return isNaN(level) ? null : level;
         }
-
-        if (!levelElement) return console.warn('Level element not found');
-
-        const playerLevel = parseInt(levelElement.textContent.trim(), 10);
-        if (isNaN(playerLevel)) return console.warn('Could not parse level');
-
         const busRequirements = [
             { id: "PanamaBtn", level: 0 },
             { id: "AlcatrazBtn", level: 5 },
