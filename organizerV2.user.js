@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         OrganiserV2
 // @namespace    http://tampermonkey.net/
-// @version      2.3
+// @version      2.4
 // @description  Floating UI with buttons that send different POST requests for gear sets or actions, with labels and grouping
 // @author       Peekaboo
 // @match        https://prisonstruggle.com/*
@@ -205,7 +205,7 @@
         });
 
         container.innerHTML = `
-            < h4 > Equipment</h4 >
+        <h4> Equipment</h4>
         <button id="fiveBtn"></button>
         <button id="sixBtn"></button>
         <button id="sevenBtn"></button>
@@ -247,10 +247,11 @@
         toggleVisibilityBtn.style.background = '#2196F3';
         container.appendChild(toggleVisibilityBtn);
 
-        document.getElementById('ToggleVisibilityBtn')?.addEventListener('click', () => {
+        toggleVisibilityBtn.addEventListener('click', () => {
             const section = document.getElementById('visibilitySectionContainer');
             section.style.display = section.style.display === 'block' ? 'none' : 'block';
         });
+
 
 
 
