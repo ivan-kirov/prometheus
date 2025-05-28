@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Bulk
 // @namespace    http://tampermonkey.net/
-// @version      1.6
+// @version      1.7
 // @description  Auto perform actions on PrisonStruggle every 5 minutes at 6 seconds
 // @grant        none
 // @author       Peekaboo
@@ -193,90 +193,90 @@
 
                         return; // Stop here to wait for reload after using the item
                     }
-                
 
-                localStorage.setItem("ps_stage", "equip-santa");
-                await performDelayedClick(() => {
-                    const btn = [...document.querySelectorAll('a.button')].find(a => a.textContent.includes("Santa"));
-                    if (btn) btn.click();
-                });
-        }
-        break;
+
+                    localStorage.setItem("ps_stage", "equip-santa");
+                    await performDelayedClick(() => {
+                        const btn = [...document.querySelectorAll('a.button')].find(a => a.textContent.includes("Santa"));
+                        if (btn) btn.click();
+                    });
+                }
+                break;
 
             case "equip-santa":
-        localStorage.setItem("ps_stage", "do-crime");
-        location.href = "/crime.php";
-        break;
+                localStorage.setItem("ps_stage", "do-crime");
+                location.href = "/crime.php";
+                break;
 
             case "do-crime":
-        if (url !== "/crime.php") {
-            location.href = "/crime.php";
-        } else {
-            localStorage.setItem("ps_stage", "after-crime");
-            await performDelayedClick(() => {
-                const btn = [...document.querySelectorAll('button')].find(b => b.textContent.includes("Use All Nerve"));
-                if (btn) btn.click();
-            });
-        }
-        break;
+                if (url !== "/crime.php") {
+                    location.href = "/crime.php";
+                } else {
+                    localStorage.setItem("ps_stage", "after-crime");
+                    await performDelayedClick(() => {
+                        const btn = [...document.querySelectorAll('button')].find(b => b.textContent.includes("Use All Nerve"));
+                        if (btn) btn.click();
+                    });
+                }
+                break;
 
             case "after-crime":
-        localStorage.setItem("ps_stage", "deposit");
-        location.href = "https://prisonstruggle.com/bank.php?dep=1";
-        break;
+                localStorage.setItem("ps_stage", "deposit");
+                location.href = "https://prisonstruggle.com/bank.php?dep=1";
+                break;
 
             case "deposit":
-        localStorage.setItem("ps_stage", "equip-pg");
-        location.href = "/inventory.php";
-        break;
+                localStorage.setItem("ps_stage", "equip-pg");
+                location.href = "/inventory.php";
+                break;
 
             case "equip-pg":
-        if (url !== "/inventory.php") {
-            location.href = "/inventory.php";
-        } else {
-            localStorage.setItem("ps_stage", "go-gym");
-            await performDelayedClick(() => {
-                const btn = [...document.querySelectorAll('a.button')].find(a => a.textContent.includes("PG"));
-                if (btn) btn.click();
-            });
-        }
-        break;
+                if (url !== "/inventory.php") {
+                    location.href = "/inventory.php";
+                } else {
+                    localStorage.setItem("ps_stage", "go-gym");
+                    await performDelayedClick(() => {
+                        const btn = [...document.querySelectorAll('a.button')].find(a => a.textContent.includes("PG"));
+                        if (btn) btn.click();
+                    });
+                }
+                break;
 
             case "go-gym":
-        localStorage.setItem("ps_stage", "gym");
-        location.href = "/pggym.php";
-        break;
+                localStorage.setItem("ps_stage", "gym");
+                location.href = "/pggym.php";
+                break;
 
             case "gym":
-        if (url === "/pggym.php") {
-            const trainBtn = [...document.querySelectorAll('input.button[type="submit"]')]
-                .find(btn => btn.value === "Train Strength");
-            if (trainBtn) {
-                setTimeout(() => {
+                if (url === "/pggym.php") {
+                    const trainBtn = [...document.querySelectorAll('input.button[type="submit"]')]
+                        .find(btn => btn.value === "Train Strength");
                     if (trainBtn) {
-                        trainBtn.click();
-                        log("💪 Clicked 'Train Strength'");
-                    } else {
-                        log("❌ 'Train Strength' button not found during timeout");
+                        setTimeout(() => {
+                            if (trainBtn) {
+                                trainBtn.click();
+                                log("💪 Clicked 'Train Strength'");
+
+                                localStorage.removeItem("ps_stage");
+                                state.incrementIteration();
+
+                                const nextRun = getNext5MinTimestamp();
+                                state.setNextRun(nextRun);
+                                log(`✅ Iteration #${state.iteration} complete. Next run at ${new Date(nextRun).toLocaleTimeString()}.`);
+                            } else {
+                                log("❌ 'Train Strength' button not found during timeout");
+                            }
+                        }, CLICK_DELAY);
+                        log(`✅ Iteration #${state.iteration} complete. Next run at ${new Date(nextRun).toLocaleTimeString()}.`);
                     }
-                }, CLICK_DELAY);
-
-
-                localStorage.removeItem("ps_stage");
-                state.incrementIteration();
-
-                const nextRun = getNext5MinTimestamp();
-                state.setNextRun(nextRun);
-                log(`✅ Iteration #${state.iteration} complete. Next run at ${new Date(nextRun).toLocaleTimeString()}.`);
-            }
-        }
-        break;
+                }
+                break;
             default:
-        localStorage.setItem("ps_stage", "start");
-        location.href = "/inventory.php";
-        break;
+                localStorage.setItem("ps_stage", "start");
+                location.href = "/inventory.php";
+                break;
+        }
     }
-}
 
     waitUntilNextRun();
-}) ();
+})();
