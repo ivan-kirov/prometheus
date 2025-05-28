@@ -93,7 +93,7 @@
         if (captchaDetected) {
             log("⚠️ CAPTCHA detected. Halting execution.");
             const verifyButton = document.querySelector('.recaptcha input[type="submit"][value="Verify!"]');
-            if (verifyButton) setTimeout(() => verifyButton.click(), 7000);
+            if (verifyButton) setTimeout(() => verifyButton.click(), 3500);
             return true;
         }
         return false;
