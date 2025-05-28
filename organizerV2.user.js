@@ -17,12 +17,13 @@
     'use strict';
 
     // You can update the button names below. They are ordered and begin from left to right on the inventory page.
+
     const equipmentLabels = {
-        five: 'str str',
-        six: 'str + grinch',
-        seven: 'gold PG',
-        eight: 'pat + weapon',
-        eleven: 'pat + grinch',
+        five: 'PG Set',
+        six: 'Santa Set',
+        seven: 'Fighting',
+        eight: 'Patriot Set',
+        eleven: 'Patriot & Cupid Set',
         twelve: 'pat + ar',
         seventeen: 'grinch set',
         eighteen: 'g set + weapon',
@@ -153,12 +154,13 @@
         <button id="sevenBtn"></button>
         <button id="eightBtn"></button>
         <button id="elevenBtn"></button>
+        <!--
         <button id="twelveBtn"></button>
         <button id="seventeenBtn"></button>
         <button id="eighteenBtn"></button>
         <button id="nineteenBtn"></button>
         <button id="twentyBtn"></button>
-
+        -->
         <h4>Actions</h4>
         <button id="toggleTrainingBtn" style="background: #2196F3;">Training ▼</button>
         <div id="trainingSection" style="display: none;" class="subsection">
