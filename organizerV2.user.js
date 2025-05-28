@@ -16,7 +16,9 @@
 (function () {
     'use strict';
 
-    const STORAGE_KEY = 'equipmentLabels';
+    let equipmentLabels = GM_getValue(STORAGE_KEY, null);
+    if (!equipmentLabels) equipmentLabels = { ...defaultLabels };
+
 
     // Default labels fallback
     const defaultLabels = {
@@ -193,9 +195,6 @@
             visibilitySection.appendChild(label);
         });
 
-        // Append visibility toggles to floating UI container
-        container.appendChild(visibilitySection);
-
         // Apply visibility on buttons immediately
         Object.entries(visibilitySettings).forEach(([key, visible]) => {
             const btn = document.getElementById(`${key}Btn`);
@@ -241,6 +240,9 @@
     `;
 
         document.body.appendChild(container);
+        
+        // Append visibility toggles to floating UI container
+        container.appendChild(visibilitySection);
 
         // Assign button labels
         for (const [key, label] of Object.entries(equipmentLabels)) {
@@ -323,21 +325,19 @@
     };
 
 
+    function getPlayerLevel() {
+        const levelElement = Array.from(document.querySelectorAll('strong'))
+            .find(el => el.previousSibling?.textContent?.includes('Level:'));
+        if (!levelElement) return null;
+        const level = parseInt(levelElement.textContent.trim(), 10);
+        return isNaN(level) ? null : level;
+    }
+
     function hideLockedPrisonBusButtons() {
         const playerLevel = getPlayerLevel();
         if (playerLevel === null) {
             console.warn('Could not determine player level.');
             return;
-        }
-
-        if (!levelElement) return console.warn('Level element not found');
-
-        function getPlayerLevel() {
-            const levelElement = Array.from(document.querySelectorAll('strong'))
-                .find(el => el.previousSibling?.textContent?.includes('Level:'));
-            if (!levelElement) return null;
-            const level = parseInt(levelElement.textContent.trim(), 10);
-            return isNaN(level) ? null : level;
         }
         const busRequirements = [
             { id: "PanamaBtn", level: 0 },
