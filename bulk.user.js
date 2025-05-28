@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Bulk
 // @namespace    http://tampermonkey.net/
-// @version      1.0
+// @version      1.7
 // @description  Auto perform actions on PrisonStruggle every 5 minutes at 6 seconds
 // @grant        none
 // @author       Peekaboo
@@ -167,36 +167,40 @@
                 }
 
                 // Existing 20 iteration check for item usage on inventory.php
-                if (iteration > 0 && iteration % 20 === 0) {
-                    // Instead of clicking the link, send a POST request to use the item
-                    log(`🧪 Iteration ${iteration}: Using item ID 14.`);
+                if (url !== "/inventory.php") {
+                    location.href = "/inventory.php";
+                } else {
+                    if (iteration > 0 && iteration % 20 === 0) {
+                        // Instead of clicking the link, send a POST request to use the item
+                        log(`🧪 Iteration ${iteration}: Using item ID 14.`);
 
-                    fetch('/plant_effect.php', {  // or correct URL for item usage if different
-                        method: 'POST',
-                        headers: {
-                            'Content-Type': 'application/x-www-form-urlencoded',
-                        },
-                        body: 'id=14',
-                        credentials: 'same-origin'
-                    })
-                        .then(response => response.text())
-                        .then(text => {
-                            log('Item use response received, reloading...');
-                            location.reload();  // or whatever reload/navigation you want
+                        fetch('/plant_effect.php', {  // or correct URL for item usage if different
+                            method: 'POST',
+                            headers: {
+                                'Content-Type': 'application/x-www-form-urlencoded',
+                            },
+                            body: 'id=14',
+                            credentials: 'same-origin'
                         })
-                        .catch(err => {
-                            log('Error using item ID 14:', err);
-                        });
+                            .then(response => response.text())
+                            .then(text => {
+                                log('Item use response received, reloading...');
+                                location.reload();  // or whatever reload/navigation you want
+                            })
+                            .catch(err => {
+                                log('Error using item ID 14:', err);
+                            });
 
-                    return; // Stop here to wait for reload after using the item
+                        return; // Stop here to wait for reload after using the item
+                    }
+
+
+                    localStorage.setItem("ps_stage", "equip-santa");
+                    await performDelayedClick(() => {
+                        const btn = [...document.querySelectorAll('a.button')].find(a => a.textContent.includes("Santa"));
+                        if (btn) btn.click();
+                    });
                 }
-
-
-                localStorage.setItem("ps_stage", "equip-santa");
-                await performDelayedClick(() => {
-                    const btn = [...document.querySelectorAll('a.button')].find(a => a.textContent.includes("Santa"));
-                    if (btn) btn.click();
-                });
                 break;
 
             case "equip-santa":
@@ -260,12 +264,10 @@
                                 state.setNextRun(nextRun);
                                 log(`✅ Iteration #${state.iteration} complete. Next run at ${new Date(nextRun).toLocaleTimeString()}.`);
                             } else {
-                                log("❌ 'Train Strength' button not found. Retrying...");
-                                const nextRun = getNext5MinTimestamp();
-                                state.setNextRun(nextRun);
-                                setTimeout(() => location.reload(), 10000);
+                                log("❌ 'Train Strength' button not found during timeout");
                             }
                         }, CLICK_DELAY);
+                        log(`✅ Iteration #${state.iteration} complete. Next run at ${new Date(nextRun).toLocaleTimeString()}.`);
                     }
                 }
                 break;
