@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Bulk
 // @namespace    http://tampermonkey.net/
-// @version      1.2
+// @version      1.3
 // @description  Auto perform actions on PrisonStruggle every 5 minutes at 6 seconds
 // @match        https://prisonstruggle.com/*
 // @grant        none
@@ -100,6 +100,22 @@
         return false;
     }
 
+    function postToPlantEffect(plantId) {
+        const form = document.createElement("form");
+        form.method = "POST";
+        form.action = "/plant_effect.php";
+
+        const input = document.createElement("input");
+        input.type = "hidden";
+        input.name = "id";
+        input.value = plantId;
+
+        form.appendChild(input);
+        document.body.appendChild(form);
+        form.submit();
+    }
+
+
     async function performDelayedClick(callback) {
         await new Promise(r => setTimeout(r, CLICK_DELAY));
         if (!checkCaptcha()) callback();
@@ -118,7 +134,7 @@
                 if (iteration % 17 === 0) {
                     if (url !== "/plant_effect.php") {
                         log(`🌱 Iteration ${iteration}: Navigating to plant_effect.php`);
-                        location.href = "/plant_effect.php";
+                        postToPlantEffect(2034);
                         return;
                     } else {
                         const startBtn = [...document.querySelectorAll('input[type="submit"][name="submit"]')]
