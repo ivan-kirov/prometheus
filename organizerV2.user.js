@@ -16,6 +16,22 @@
 (function () {
     'use strict';
 
+    // You can update the button names below. They are ordered and begin from left to right on the inventory page.
+    const equipmentLabels = {
+        five: 'str str',
+        six: 'str + grinch',
+        seven: 'gold PG',
+        eight: 'pat + weapon',
+        eleven: 'pat + grinch',
+        twelve: 'pat + ar',
+        seventeen: 'grinch set',
+        eighteen: 'g set + weapon',
+        nineteen: 'pat + bow',
+        twenty: 'santa'
+    };
+
+    // DO NOT CHANGE ANYTHING BELOW OR YOU WILL BREAK THE SCRIPT
+
     // ===== Styling for Floating UI =====
     const style = `
 #floating-ui {
@@ -118,32 +134,40 @@
 .subsection { display: none; transition: all 0.3s ease-in-out; }
     `;
     GM_addStyle(style);
+    initUI();
+    hideLockedPrisonBusButtons();
+
 
     // ===== Create UI =====
-    const container = document.createElement('div');
-    container.id = 'floating-ui';
-    container.innerHTML = `
+    function initUI() {
+        const existing = document.getElementById('floating-ui');
+        if (existing) existing.remove(); // Prevent duplicates on re-init
+
+        const container = document.createElement('div');
+        container.id = 'floating-ui';
+
+        container.innerHTML = `
         <h4>Equipment</h4>
-        <button id="fiveBtn">str str</button>
-        <button id="sixBtn">str + grinch</button>
-        <button id="sevenBtn">gold PG</button>
-        <button id="eightBtn">pat + weapon</button>
-        <button id="elevenBtn">pat + grinch</button>
-        <button id="twelveBtn">pat + ar</button>
-        <button id="seventeenBtn">grinch set</button>
-        <button id="eighteenBtn">g set + weap</button>
-        <button id="nineteenBtn">pat + bow</button>
-        <button id="twentyBtn">santa</button>
+        <button id="fiveBtn"></button>
+        <button id="sixBtn"></button>
+        <button id="sevenBtn"></button>
+        <button id="eightBtn"></button>
+        <button id="elevenBtn"></button>
+        <button id="twelveBtn"></button>
+        <button id="seventeenBtn"></button>
+        <button id="eighteenBtn"></button>
+        <button id="nineteenBtn"></button>
+        <button id="twentyBtn"></button>
 
         <h4>Actions</h4>
         <button id="toggleTrainingBtn" style="background: #2196F3;">Training ▼</button>
-        <div id="trainingSection" style="display: none;"; class="subsection">
+        <div id="trainingSection" style="display: none;" class="subsection">
             <button id="mint5Btn">Mint x5</button>
             <button id="shardExpBtn">Shard Exp</button>
         </div>
 
         <button id="toggleBusBtn" style="background: #2196F3;">Prison Bus ▼</button>
-        <div id="busSection" style="display: none;"; class="subsection">
+        <div id="busSection" style="display: none;" class="subsection">
             <button id="PanamaBtn">Panama</button>
             <button id="AlcatrazBtn">Alcatraz</button>
             <button id="GuantanamoBayBtn">Guantanamo Bay</button>
@@ -155,20 +179,45 @@
             <button id="McNeilIslandBtn">McNeil Island</button>
             <button id="SingSingBtn">Sing Sing</button>
             <button id="DevilIslandBtn">Devil Island</button>
-            <button id="ReikerBtn">Reiker</button>
+            <button id="RikerBtn">Riker</button>
         </div>
     `;
-    document.body.appendChild(container);
 
-    // ===== Toggle Sections =====
-    document.getElementById('toggleTrainingBtn').addEventListener('click', () => {
-        const section = document.getElementById('trainingSection');
-        section.style.display = section.style.display === 'block' ? 'none' : 'block';
-    });
-    document.getElementById('toggleBusBtn').addEventListener('click', () => {
-        const section = document.getElementById('busSection');
-        section.style.display = section.style.display === 'block' ? 'none' : 'block';
-    });
+        document.body.appendChild(container);
+
+        // Assign button labels
+        for (const [key, label] of Object.entries(equipmentLabels)) {
+            const btn = document.getElementById(`${key}Btn`);
+            if (btn) btn.textContent = label;
+        }
+
+        // Re-bind toggles (ensure these don’t get bound multiple times if re-called)
+        document.getElementById('toggleTrainingBtn')?.addEventListener('click', () => {
+            const section = document.getElementById('trainingSection');
+            section.style.display = section.style.display === 'block' ? 'none' : 'block';
+        });
+
+        document.getElementById('toggleBusBtn')?.addEventListener('click', () => {
+            const section = document.getElementById('busSection');
+            section.style.display = section.style.display === 'block' ? 'none' : 'block';
+        });
+    }
+
+    function showToast(message) {
+        const toast = document.createElement('div');
+        toast.textContent = message;
+        toast.style.position = 'fixed';
+        toast.style.bottom = '30px';
+        toast.style.right = '30px';
+        toast.style.background = '#333';
+        toast.style.color = '#fff';
+        toast.style.padding = '10px 16px';
+        toast.style.borderRadius = '6px';
+        toast.style.zIndex = '10001';
+        toast.style.opacity = '0.9';
+        document.body.appendChild(toast);
+        setTimeout(() => toast.remove(), 2000);
+    }
 
     // ===== Payload Definitions =====
     const payloads = {
@@ -194,9 +243,42 @@
         attica: { go: '8' },
         mcNeilIsland: { go: '9' },
         singSing: { go: '10' },
-        devilIsland: {go: '11'},
-        riker: {go: '12'},
+        devilIsland: { go: '11' },
+        riker: { go: '12' },
     };
+
+
+    function hideLockedPrisonBusButtons() {
+        const levelElement = Array.from(document.querySelectorAll('strong'))
+            .find(el => el.previousSibling?.textContent?.includes('Level:'));
+        if (!levelElement) return console.warn('Level element not found');
+
+        const playerLevel = parseInt(levelElement.textContent.trim(), 10);
+        if (isNaN(playerLevel)) return console.warn('Could not parse level');
+
+        const busRequirements = [
+            { id: "PanamaBtn", level: 0 },
+            { id: "AlcatrazBtn", level: 5 },
+            { id: "GuantanamoBayBtn", level: 10 },
+            { id: "LongBayBtn", level: 20 },
+            { id: "UtahBtn", level: 35 },
+            { id: "DorchesterBtn", level: 75 },
+            { id: "SanQuentinBtn", level: 125 },
+            { id: "AtticaBtn", level: 150 },
+            { id: "McNeilIslandBtn", level: 175 },
+            { id: "SingSingBtn", level: 200 },
+            { id: "DevilIslandBtn", level: 275 },
+            { id: "RikerBtn", level: 350 } // Ensure this ID matches the actual button ID
+        ];
+
+        busRequirements.forEach(({ id, level }) => {
+            const btn = document.getElementById(id);
+            if (btn && playerLevel < level) {
+                btn.style.display = 'none';
+            }
+        });
+    }
+
 
     // ===== POST Sender =====
     function sendPost(payload, label, url = 'https://prisonstruggle.com/inventory.php') {
@@ -204,21 +286,24 @@
             method: 'POST',
             url: url,
             headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
-            data: new URLSearchParams(payload).toString()
+            data: new URLSearchParams(payload).toString(),
+            onload: () => showToast(`${label} action sent`)
         });
     }
 
+
     // ===== Event Listeners =====
-    document.getElementById('fiveBtn').addEventListener('click', () => sendPost(payloads.five, 'str str'));
-    document.getElementById('sixBtn').addEventListener('click', () => sendPost(payloads.six, 'str + grinch'));
-    document.getElementById('sevenBtn').addEventListener('click', () => sendPost(payloads.seven, 'gold PG'));
-    document.getElementById('eightBtn').addEventListener('click', () => sendPost(payloads.eight, 'pat + weapon'));
-    document.getElementById('elevenBtn').addEventListener('click', () => sendPost(payloads.eleven, 'pat + grinch'));
-    document.getElementById('twelveBtn').addEventListener('click', () => sendPost(payloads.twelve, 'pat + ar'));
-    document.getElementById('seventeenBtn').addEventListener('click', () => sendPost(payloads.seventeen, 'grinch set'));
-    document.getElementById('eighteenBtn').addEventListener('click', () => sendPost(payloads.eighteen, 'g set + weapon'));
-    document.getElementById('nineteenBtn').addEventListener('click', () => sendPost(payloads.nineteen, 'pat + bow'));
-    document.getElementById('twentyBtn').addEventListener('click', () => sendPost(payloads.twenty, 'santa'));
+    document.getElementById('fiveBtn').addEventListener('click', () => sendPost(payloads.five, equipmentLabels.five));
+    document.getElementById('sixBtn').addEventListener('click', () => sendPost(payloads.six, equipmentLabels.six));
+    document.getElementById('sevenBtn').addEventListener('click', () => sendPost(payloads.seven, equipmentLabels.seven));
+    document.getElementById('eightBtn').addEventListener('click', () => sendPost(payloads.eight, equipmentLabels.eight));
+    document.getElementById('elevenBtn').addEventListener('click', () => sendPost(payloads.eleven, equipmentLabels.eleven));
+    document.getElementById('twelveBtn').addEventListener('click', () => sendPost(payloads.twelve, equipmentLabels.twelve));
+    document.getElementById('seventeenBtn').addEventListener('click', () => sendPost(payloads.seventeen, equipmentLabels.seventeen));
+    document.getElementById('eighteenBtn').addEventListener('click', () => sendPost(payloads.eighteen, equipmentLabels.eighteen));
+    document.getElementById('nineteenBtn').addEventListener('click', () => sendPost(payloads.nineteen, equipmentLabels.nineteen));
+    document.getElementById('twentyBtn').addEventListener('click', () => sendPost(payloads.twenty, equipmentLabels.twenty));
+
 
     document.getElementById('mint5Btn').addEventListener('click', () =>
         sendPost(payloads.mint5, 'Mint x5', 'https://prisonstruggle.com/plant_effect.php'));
@@ -245,8 +330,8 @@
         sendPost(payloads.mcNeilIsland, 'McNeil Island', 'https://prisonstruggle.com/bus.php'));
     document.getElementById('SingSingBtn').addEventListener('click', () =>
         sendPost(payloads.singSing, 'Sing Sing', 'https://prisonstruggle.com/bus.php'));
-     document.getElementById('DevilIslandBtn').addEventListener('click', () =>
+    document.getElementById('DevilIslandBtn').addEventListener('click', () =>
         sendPost(payloads.devilIsland, 'Devil Island', 'https://prisonstruggle.com/bus.php'));
-     document.getElementById('RikerBtn').addEventListener('click', () =>
+    document.getElementById('RikerBtn').addEventListener('click', () =>
         sendPost(payloads.riker, 'Riker', 'https://prisonstruggle.com/bus.php'));
 })();
