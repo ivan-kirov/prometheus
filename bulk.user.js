@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Bulk
 // @namespace    http://tampermonkey.net/
-// @version      1.8
+// @version      1.9
 // @description  Auto perform actions on PrisonStruggle every 5 minutes at 6 seconds
 // @grant        none
 // @author       Peekaboo
