@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         OrganiserV2
 // @namespace    http://tampermonkey.net/
-// @version      2.1
+// @version      2.2
 // @description  Floating UI with buttons that send different POST requests for gear sets or actions, with labels and grouping
 // @author       Peekaboo
 // @match        https://prisonstruggle.com/*
@@ -170,7 +170,7 @@
         visibilitySection.style.marginTop = '10px';
         visibilitySection.innerHTML = `
         <h4>Show / Hide Buttons</h4>
-        <button id="toggleShowHideBtn">Toggle Visibility ▼</button>
+        <button id="ToggleShowHideBtn">Toggle Visibility ▼</button>
         <div id="toggleShowHide" style="display: none;" class="subsection">
         `;
 
@@ -223,7 +223,7 @@
             <button id="shardTrainingBtn">Shard Training</button>
         </div>
 
-        <button id="toggleBusBtn" style="background: #2196F3;">Prison Bus ▼</button>
+        <button id="ToggleBusBtn" style="background: #2196F3;">Prison Bus ▼</button>
         <div id="busSection" style="display: none;" class="subsection">
             <button id="PanamaBtn">Panama</button>
             <button id="AlcatrazBtn">Alcatraz</button>
@@ -283,7 +283,7 @@
             section.style.display = section.style.display === 'block' ? 'none' : 'block';
         });
 
-        document.getElementById('toggleBusBtn')?.addEventListener('click', () => {
+        document.getElementById('ToggleBusBtn')?.addEventListener('click', () => {
             const section = document.getElementById('busSection');
             section.style.display = section.style.display === 'block' ? 'none' : 'block';
         });
