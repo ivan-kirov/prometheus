@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         OrganiserV2
 // @namespace    http://tampermonkey.net/
-// @version      1.7
+// @version      1.8
 // @description  Floating UI with buttons that send different POST requests for gear sets or actions, with labels and grouping
 // @author       Peekaboo
 // @match        https://prisonstruggle.com/*
@@ -167,6 +167,7 @@
             <button id="healthBtn">Health Pill</button>
             <button id="mint5Btn">Mint x5</button>
             <button id="shardExpBtn">Shard Exp</button>
+            <button id="shardTrainingBtn">Shard Training</button>
         </div>
 
         <button id="toggleBusBtn" style="background: #2196F3;">Prison Bus ▼</button>
@@ -236,7 +237,8 @@
         twenty: { rpfeature: '20', save1: '_0', save2: '_0', save3: '_0', save4: '_0', save5: '_0', save6: '_0', save7: '_0', save8: '_0', save9: '_0', save10: '_0' },
         health: {use: '76'},
         mint5: { activate: 'yes', itemcount: '1', id: '2026', useMax: 'Use+Max+%285+Mints%29' },
-        shardExp: { buffBuy: 'shard_training' },
+        shardExp: { buffBuy: 'shard_experience' },
+        shardTraining: { buffBuy: 'shard_training' },
         panama: { go: '1' },
         alcatraz: { go: '2' },
         guantanamoBay: { go: '3' },
@@ -312,7 +314,9 @@
     document.getElementById('mint5Btn').addEventListener('click', () =>
         sendPost(payloads.mint5, 'Mint x5', 'https://prisonstruggle.com/plant_effect.php'));
     document.getElementById('shardExpBtn').addEventListener('click', () =>
-        sendPost(payloads.shardExp, 'Shard Exp', 'https://prisonstruggle.com/wiseoldman.php?action=shards'));
+        sendPost(payloads.shardExp, 'Shard Experience', 'https://prisonstruggle.com/wiseoldman.php?action=shards'));
+    document.getElementById('shardTrainingBtn').addEventListener('click', () =>
+        sendPost(payloads.shardTraining, 'Shard Training', 'https://prisonstruggle.com/wiseoldman.php?action=shards'));
     document.getElementById('PanamaBtn').addEventListener('click', () =>
         sendPost(payloads.panama, 'Panama', 'https://prisonstruggle.com/bus.php'));
     document.getElementById('AlcatrazBtn').addEventListener('click', () =>
