@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         OrganiserV2
 // @namespace    http://tampermonkey.net/
-// @version      1.8
+// @version      1.9
 // @description  Floating UI with buttons that send different POST requests for gear sets or actions, with labels and grouping
 // @author       Peekaboo
 // @match        https://prisonstruggle.com/*
@@ -31,44 +31,59 @@
         twenty: 'santa'
     };
 
-    // DO NOT CHANGE ANYTHING BELOW OR YOU WILL BREAK THE SCRIPT
+    // To hide or show buttons in the equipment section use the following logic inside the "container.innerHTML" (Line 156) <!-- anything inbetween is hidden -->
+    // Currently I am hiding the last 5 buttons
+    // For example
+    //  <!--
+    //    <button id="twelveBtn"></button>
+    //    <button id="seventeenBtn"></button>
+    //    <button id="eighteenBtn"></button>
+    //    <button id="nineteenBtn"></button>
+    //    <button id="twentyBtn"></button>
+    //    -->
 
     // ===== Styling for Floating UI =====
     const style = `
 #floating-ui {
-    position: fixed;
-    top: 20px;
-    right: 20px;
-    max-width: 180px;
-    background: rgba(0, 0, 0, 0.85);
-    color: white;
-    border: 1px solid #ccc;
-    border-radius: 10px;
-    padding: 12px 10px;
-    z-index: 10000;
-    font-family: Arial, sans-serif;
-    font-size: 14px;
-    box-sizing: border-box;
+  position: fixed;
+  top: 2vh;
+  right: 2vw;
+  max-width: 180px;
+  min-width: 140px;
+  max-height: 80vh;
+  overflow-y: auto;
+  background: rgba(0, 0, 0, 0.85);
+  color: white;
+  border: 1px solid #ccc;
+  border-radius: 10px;
+  padding: 12px 10px;
+  z-index: 10000;
+  font-family: Arial, sans-serif;
+  font-size: 14px;
+  box-sizing: border-box;
 }
+
 @media (max-width: 600px) {
-    #floating-ui {
-        top: auto;
-        bottom: 20px;
-        right: 10px;
-        left: 10px;
-        max-width: none;
-        width: calc(100% - 20px);
-        border-radius: 12px;
-        font-size: 16px;
-    }
-    #floating-ui button {
-        font-size: 16px;
-        padding: 10px;
-    }
-    #floating-ui h4 {
-        font-size: 17px;
-    }
+  #floating-ui {
+    top: auto;
+    bottom: 20px;
+    right: 10px;
+    left: 10px;
+    max-width: none;
+    width: calc(100% - 20px);
+    border-radius: 12px;
+    font-size: 16px;
+    max-height: 50vh;
+  }
+  #floating-ui button {
+    font-size: 16px;
+    padding: 10px;
+  }
+  #floating-ui h4 {
+    font-size: 17px;
+  }
 }
+
 #floating-ui h4 {
     margin: 10px 0 6px;
     padding-bottom: 4px;
@@ -235,7 +250,7 @@
         eighteen: { rpfeature: '18', save1: '_0', save2: '_0', save3: '_0', save4: '_0', save5: '_0', save6: '_0', save7: '_0', save8: '_0', save9: '_0', save10: '_0' },
         nineteen: { rpfeature: '19', save1: '_0', save2: '_0', save3: '_0', save4: '_0', save5: '_0', save6: '_0', save7: '_0', save8: '_0', save9: '_0', save10: '_0' },
         twenty: { rpfeature: '20', save1: '_0', save2: '_0', save3: '_0', save4: '_0', save5: '_0', save6: '_0', save7: '_0', save8: '_0', save9: '_0', save10: '_0' },
-        health: {use: '76'},
+        health: { use: '76' },
         mint5: { activate: 'yes', itemcount: '1', id: '2026', useMax: 'Use+Max+%285+Mints%29' },
         shardExp: { buffBuy: 'shard_experience' },
         shardTraining: { buffBuy: 'shard_training' },
