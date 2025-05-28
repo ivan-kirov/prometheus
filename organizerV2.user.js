@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         OrganiserV2
 // @namespace    https://github.com/ivan-kirov/prometheus
-// @version      1.6
+// @version      1.7
 // @description  Floating UI with buttons that send different POST requests for gear sets or actions, with labels and grouping
 // @author       Peekaboo
 // @match        https://prisonstruggle.com/*
@@ -162,8 +162,8 @@
         <button id="twentyBtn"></button>
         -->
         <h4>Actions</h4>
-        <button id="toggleTrainingBtn" style="background: #2196F3;">Training ▼</button>
-        <div id="trainingSection" style="display: none;" class="subsection">
+        <button id="UseBtn" style="background: #2196F3;">Use ▼</button>
+        <div id="useSection" style="display: none;" class="subsection">
             <button id="healthBtn">Health Pill</button>
             <button id="mint5Btn">Mint x5</button>
             <button id="shardExpBtn">Shard Exp</button>
@@ -195,8 +195,8 @@
         }
 
         // Re-bind toggles (ensure these don’t get bound multiple times if re-called)
-        document.getElementById('toggleTrainingBtn')?.addEventListener('click', () => {
-            const section = document.getElementById('trainingSection');
+        document.getElementById('UseBtn')?.addEventListener('click', () => {
+            const section = document.getElementById('useSection');
             section.style.display = section.style.display === 'block' ? 'none' : 'block';
         });
 
