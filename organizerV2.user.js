@@ -15,10 +15,8 @@
 
 (function () {
     'use strict';
-
-    let equipmentLabels = GM_getValue(STORAGE_KEY, null);
-    if (!equipmentLabels) equipmentLabels = { ...defaultLabels };
-
+    
+    const STORAGE_KEY = 'equipmentLabels';    
 
     // Default labels fallback
     const defaultLabels = {
@@ -33,6 +31,9 @@
         nineteen: 'pat + bow',
         twenty: 'santa'
     };
+
+    let equipmentLabels = GM_getValue(STORAGE_KEY, null);
+    if (!equipmentLabels) equipmentLabels = { ...defaultLabels };
 
     // ===== Styling for Floating UI =====
     const style = `
@@ -200,7 +201,7 @@
             const btn = document.getElementById(`${key}Btn`);
             if (btn) btn.style.display = visible ? 'block' : 'none';
         });
-
+        
         container.innerHTML = `
         <h4>Equipment</h4>
         <button id="fiveBtn"></button>
@@ -239,10 +240,8 @@
         </div>
     `;
 
-        document.body.appendChild(container);
-        
-        // Append visibility toggles to floating UI container
         container.appendChild(visibilitySection);
+        document.body.appendChild(container);
 
         // Assign button labels
         for (const [key, label] of Object.entries(equipmentLabels)) {
