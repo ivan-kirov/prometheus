@@ -167,14 +167,9 @@
                 }
 
                 // Existing 20 iteration check for item usage on inventory.php
-                if (url !== "/inventory.php") {
-                    location.href = "/inventory.php";
-                }
-                if (iteration > 0 && iteration % 20 === 0) {
-                    // Instead of clicking the link, send a POST request to use the item
+                if (url === "/inventory.php" && iteration > 0 && iteration % 20 === 0) {
                     log(`🧪 Iteration ${iteration}: Using item ID 14.`);
-
-                    fetch('/plant_effect.php', {  // or correct URL for item usage if different
+                    fetch('/plant_effect.php', {
                         method: 'POST',
                         headers: {
                             'Content-Type': 'application/x-www-form-urlencoded',
@@ -185,14 +180,20 @@
                         .then(response => response.text())
                         .then(text => {
                             log('Item use response received, reloading...');
-                            location.reload();  // or whatever reload/navigation you want
+                            location.reload();
                         })
                         .catch(err => {
                             log('Error using item ID 14:', err);
                         });
-
-                    return; // Stop here to wait for reload after using the item
+                    return; // Stop and reload
                 }
+
+                // Make sure we are on the inventory page before proceeding
+                if (url !== "/inventory.php") {
+                    location.href = "/inventory.php";
+                    return; // Prevent the rest from running until we're on inventory
+                }
+
 
 
                 localStorage.setItem("ps_stage", "equip-santa");
