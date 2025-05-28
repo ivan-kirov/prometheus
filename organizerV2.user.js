@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         OrganiserV2
 // @namespace    http://tampermonkey.net/
-// @version      2.0
+// @version      2.1
 // @description  Floating UI with buttons that send different POST requests for gear sets or actions, with labels and grouping
 // @author       Peekaboo
 // @match        https://prisonstruggle.com/*
@@ -168,7 +168,11 @@
         // Create a visibility toggle section
         const visibilitySection = document.createElement('div');
         visibilitySection.style.marginTop = '10px';
-        visibilitySection.innerHTML = `<h4>Show / Hide Buttons</h4>`;
+        visibilitySection.innerHTML = `
+        <h4>Show / Hide Buttons</h4>
+        <button id="toggleShowHideBtn">Toggle Visibility ▼</button>
+        <div id="toggleShowHide" style="display: none;" class="subsection">
+        `;
 
         // Add a checkbox per equipment button
         Object.keys(equipmentLabels).forEach(key => {
@@ -271,6 +275,11 @@
         // Re-bind toggles (ensure these don’t get bound multiple times if re-called)
         document.getElementById('UseBtn')?.addEventListener('click', () => {
             const section = document.getElementById('useSection');
+            section.style.display = section.style.display === 'block' ? 'none' : 'block';
+        });
+
+        document.getElementById('ToggleShowHideBtn')?.addEventListener('click', () => {
+            const section = document.getElementById('toggleShowHide');
             section.style.display = section.style.display === 'block' ? 'none' : 'block';
         });
 
