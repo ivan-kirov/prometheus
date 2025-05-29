@@ -2,7 +2,7 @@
 // @name         Ovivore
 // @namespace    http://tampermonkey.net/
 // @version      1.3
-// @description  Auto-refresh, detect Easter eggs, and track activity on PrisonStruggle.
+// @description  nothing
 // @author       Peekaboo
 // @match        https://prisonstruggle.com/*
 // @grant        none
