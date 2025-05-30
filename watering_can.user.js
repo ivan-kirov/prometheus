@@ -31,7 +31,7 @@
             i++;
 
             // Check if we need to apply a cooldown
-            if (i % 30 === 0) {
+            if (i % 20 === 0) {
                 console.log(`Cooldown after ${i} clicks... waiting 10 seconds`);
                 setTimeout(clickNext, 10000); // 10 second cooldown
             } else {
