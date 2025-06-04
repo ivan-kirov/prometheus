@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Sickle
 // @namespace    http://tampermonkey.net/
-// @version      1.4
+// @version      1.5
 // @description  Finds all plants and harvests them one by one. Uses a delay and cooldown every 30 clicks. Also works on mobile
 // @match        https://prisonstruggle.com/fields.php
 // @grant        none
@@ -39,6 +39,7 @@
                 setTimeout(clickNext, 300); // Regular delay between clicks
             }
         }
+        clickNext();
 
     });
 })();
