@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         OrganiserV2
 // @namespace    http://tampermonkey.net/
-// @version      2.7
+// @version      3.0
 // @description  Floating UI with buttons that send different POST requests for gear sets or actions, with labels and grouping
 // @author       Peekaboo
 // @match        https://prisonstruggle.com/*
@@ -15,6 +15,9 @@
 // @downloadURL  https://raw.githubusercontent.com/ivan-kirov/prometheus/main/organizerV2.user.js
 // ==/UserScript==
 
+
+// right click on the equipment button to edit
+
 (function () {
     'use strict';
 
@@ -22,16 +25,16 @@
 
     // Default labels fallback
     const defaultLabels = {
-        five: 'PG Set',
-        six: 'Santa Set',
-        seven: 'Fighting',
-        eight: 'Patriot Set',
-        eleven: 'Patriot & Cupid Set',
-        twelve: 'pat + ar',
-        seventeen: 'grinch set',
-        eighteen: 'g set + weapon',
-        nineteen: 'pat + bow',
-        twenty: 'santa'
+        five: '1',
+        six: '2',
+        seven: '3',
+        eight: '4',
+        eleven: '5',
+        twelve: '6',
+        seventeen: '7',
+        eighteen: '8',
+        nineteen: '9',
+        twenty: '10'
     };
 
     let equipmentLabels = GM_getValue(STORAGE_KEY, null);
