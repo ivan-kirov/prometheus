@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         OrganiserV2
 // @namespace    http://tampermonkey.net/
-// @version      3.0
+// @version      3.1
 // @description  Floating UI with buttons that send different POST requests for gear sets or actions, with labels and grouping
 // @author       Peekaboo
 // @match        https://prisonstruggle.com/*
@@ -25,16 +25,16 @@
 
     // Default labels fallback
     const defaultLabels = {
-        five: '1',
-        six: '2',
-        seven: '3',
-        eight: '4',
-        eleven: '5',
-        twelve: '6',
-        seventeen: '7',
-        eighteen: '8',
-        nineteen: '9',
-        twenty: '10'
+        five: 'right click to edit',
+        six: 'right click to edit',
+        seven: 'right click to edit',
+        eight: 'right click to edit',
+        eleven: 'right click to edit',
+        twelve: 'right click to edit',
+        seventeen: 'right click to edit',
+        eighteen: 'right click to edit',
+        nineteen: 'right click to edit',
+        twenty: 'right click to edit'
     };
 
     let equipmentLabels = GM_getValue(STORAGE_KEY, null);
